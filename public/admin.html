@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lune admin</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Great+Vibes&family=Karla:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fff6f2;
+        --ink: #2b1630;
+        --mute: #7b6475;
+        --acc: #c2185b;
+        --line: #f1dcd8;
+        --grad: linear-gradient(100deg, #b5179e, #e8505b 60%, #f2a33a);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.5 Karla,
+          system-ui,
+          sans-serif;
+      }
+      h2,
+      h3 {
+        font-family: "Gilda Display", Georgia, serif;
+        font-weight: 400;
+        margin: 0 0 14px;
+      }
+      .logo {
+        font:
+          400 38px/1.2 "Great Vibes",
+          "Brush Script MT",
+          cursive;
+        padding: 0 6px;
+        color: #c2185b;
+        background: var(--grad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 5vw;
+        border-bottom: 1px solid var(--line);
+      }
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 28px 5vw 80px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 22px;
+        margin-bottom: 24px;
+      }
+      .login {
+        max-width: 380px;
+        margin: 9vh auto;
+      }
+      label {
+        display: block;
+        font-size: 14px;
+        margin: 12px 0 4px;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e3cfd0;
+        border-radius: 3px;
+        font: inherit;
+        background: #fff;
+      }
+      .btn {
+        background: var(--grad);
+        color: #fff;
+        border: 0;
+        border-radius: 3px;
+        padding: 9px 18px;
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .btn:hover {
+        filter: brightness(0.93);
+      }
+      .btn.wide {
+        width: 100%;
+        margin-top: 16px;
+      }
+      .link {
+        background: none;
+        border: 0;
+        font: inherit;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .link:hover {
+        color: var(--acc);
+        text-decoration: underline;
+      }
+      .wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 9px 8px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        font-size: 13px;
+        color: var(--mute);
+        font-weight: 500;
+      }
+      td input {
+        width: 90px;
+        padding: 6px;
+      }
+      .hint {
+        color: var(--mute);
+        font-size: 13px;
+      }
+      .tag {
+        padding: 2px 9px;
+        border-radius: 10px;
+        font-size: 13px;
+        background: #fdebc4;
+      }
+      .tag.paid {
+        background: #d9f0dc;
+      }
+      .pick {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 4px 14px;
+        margin: 10px 0 16px;
+      }
+      .pick label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 0;
+        font-size: 15px;
+      }
+      .pick input {
+        width: auto;
+      }
+      .err {
+        color: #b3261e;
+        min-height: 20px;
+        font-size: 14px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="logo">Lune</span
+      ><span id="who" hidden
+        >Admin · <button class="link" onclick="out()">Log out</button></span
+      >
+    </header>
+    <main>
+      <div id="login" class="card login">
+        <h2>Admin login</h2>
+        <form onsubmit="login(event)">
+          <label>Email</label
+          ><input id="em" type="email" autocomplete="username" required />
+          <label>Password</label
+          ><input
+            id="pw"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+          <p class="err" id="err"></p>
+          <button class="btn wide">Log in</button>
+        </form>
+      </div>
+      <div id="app" hidden>
+        <div class="card" id="demo" hidden>
+          <h2>Testing tools</h2>
+          <p class="hint">
+            Only shown while payments are in demo mode. Every test order uses up
+            stock, so reset it here whenever you want to test again.
+          </p>
+          <p>
+            <input
+              id="rs"
+              type="number"
+              value="10"
+              style="width: 90px; display: inline-block"
+            />
+            pieces of each
+            <button class="btn" onclick="resetStock()">Reset stock</button>
+          </p>
+        </div>
+        <div class="card">
+          <h2>Orders</h2>
+          <div class="wrap"><table id="orders"></table></div>
+        </div>
+        <div class="card">
+          <h2>Stock and prices</h2>
+          <div class="wrap"><table id="prods"></table></div>
+        </div>
+        <div class="card">
+          <h2>Outfits and drops</h2>
+          <div class="wrap"><table id="looks"></table></div>
+          <h3 style="margin-top: 24px">Create an outfit</h3>
+          <div class="row">
+            <input id="ot" placeholder="Outfit name" /><input
+              id="od"
+              placeholder="Drop (e.g. Drop 02)"
+            /><input id="ob" placeholder="One-line description" /><input
+              id="oi"
+              placeholder="Inspo photo (optional)"
+            />
+          </div>
+          <p class="hint">Pick the pieces in this outfit:</p>
+          <div class="pick" id="pick"></div>
+          <button class="btn" onclick="addL()">Publish outfit</button>
+        </div>
+        <div class="card">
+          <h3>Add a product</h3>
+          <div class="row">
+            <input id="n" placeholder="Name" /><input
+              id="c"
+              placeholder="Category"
+            /><input id="p" type="number" placeholder="Price (KES)" /><input
+              id="s"
+              type="number"
+              placeholder="Stock"
+            /><input id="i" placeholder="Photo link" />
+          </div>
+          <button class="btn" onclick="addP()">Add product</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      const $ = (s) => document.querySelector(s),
+        esc = (s) =>
+          String(s ?? "").replace(
+            /[&<>"']/g,
+            (c) => "&#" + c.charCodeAt(0) + ";",
+          ),
+        KES = (n) => "KES " + Number(n).toLocaleString();
+      let tk = sessionStorage.tk,
+        prods = [];
+      async function call(m, u, b) {
+        const r = await fetch("/api/admin/" + u, {
+          method: m,
+          headers: {
+            "Content-Type": "application/json",
+            ...(tk && { Authorization: "Bearer " + tk }),
+          },
+          body: b && JSON.stringify(b),
+        });
+        const d = await r.json().catch(() => ({}));
+        if (r.status == 401 && u != "login") {
+          out();
+          throw new Error("Session expired");
+        }
+        if (!r.ok) throw new Error(d.error || "Something went wrong");
+        return d;
+      }
+      async function login(e) {
+        e.preventDefault();
+        $("#err").textContent = "";
+        try {
+          const d = await call("POST", "login", {
+            email: $("#em").value,
+            password: $("#pw").value,
+          });
+          tk = sessionStorage.tk = d.token;
+          $("#pw").value = "";
+          show();
+        } catch (x) {
+          $("#err").textContent = x.message;
+        }
+      }
+      function out() {
+        tk = null;
+        sessionStorage.removeItem("tk");
+        $("#app").hidden = true;
+        $("#who").hidden = true;
+        $("#login").hidden = false;
+      }
+      async function show() {
+        $("#login").hidden = true;
+        $("#app").hidden = false;
+        $("#who").hidden = false;
+        call("GET", "config")
+          .then((c) => ($("#demo").hidden = !c.demo))
+          .catch(() => {});
+        await Promise.all([loadO(), loadP()]);
+      }
+      async function resetStock() {
+        try {
+          await call("POST", "reset-stock", { stock: +$("#rs").value });
+          await loadP();
+          alert("Stock reset");
+        } catch (x) {
+          alert(x.message);
+        }
+      }
+      async function loadO() {
+        const o = await call("GET", "orders");
+        $("#orders").innerHTML =
+          "<tr><th>Order<th>Customer<th>Items<th>Deliver to<th>Total<th>Status" +
+          (o
+            .map(
+              (x) =>
+                `<tr><td>#${x.id}<br><span class="hint">${esc(String(x.created).slice(0, 10))}</span><td>${esc(x.name)}<br><span class="hint">${esc(x.phone)}</span><td>${JSON.parse(
+                  x.items,
+                )
+                  .map((i) => `${i.qty} × ${esc(i.name)}`)
+                  .join(
+                    "<br>",
+                  )}<td>${esc(x.address)}, ${esc(x.zone)}<td>${KES(x.total)}<td><span class="tag ${esc(x.status)}">${esc(x.status)}</span>${x.receipt ? `<br><span class="hint">${esc(x.receipt)}</span>` : ""}`,
+            )
+            .join("") || '<tr><td colspan="6" class="hint">No orders yet.');
+      }
+      async function loadP() {
+        const d = await call("GET", "products");
+        prods = d;
+        $("#prods").innerHTML =
+          "<tr><th>Product<th>Price (KES)<th>In stock<th>" +
+          d
+            .map(
+              (p) =>
+                `<tr><td>${esc(p.name)}<br><span class="hint">${esc(p.category)}</span><td><input id="pr${p.id}" type="number" value="${p.price}"><td><input id="st${p.id}" type="number" value="${p.stock}"><td><button class="btn" onclick="save(${p.id},this)">Save</button>`,
+            )
+            .join("");
+        $("#pick").innerHTML = d
+          .map(
+            (p) =>
+              `<label><input type="checkbox" value="${p.id}">${esc(p.name)}</label>`,
+          )
+          .join("");
+        loadL();
+      }
+      async function loadL() {
+        const o = await call("GET", "outfits");
+        $("#looks").innerHTML =
+          "<tr><th>Outfit<th>Drop<th>Pieces<th>" +
+          (o
+            .map(
+              (x) =>
+                `<tr><td>${esc(x.title)}<td>${esc(x.drop_name)}<td>${x.items.map((id) => esc(prods.find((p) => p.id == id)?.name || "?")).join(", ")}<td><button class="link" onclick="delL(${x.id})">Remove</button>`,
+            )
+            .join("") || '<tr><td colspan="4" class="hint">No outfits yet.');
+      }
+      async function addL() {
+        try {
+          await call("POST", "outfits", {
+            title: $("#ot").value,
+            drop_name: $("#od").value,
+            blurb: $("#ob").value,
+            image: $("#oi").value,
+            items: [...document.querySelectorAll("#pick input:checked")].map(
+              (i) => i.value,
+            ),
+          });
+          ["ot", "od", "ob", "oi"].forEach((k) => ($("#" + k).value = ""));
+          document
+            .querySelectorAll("#pick input")
+            .forEach((i) => (i.checked = false));
+          loadL();
+        } catch (x) {
+          alert(x.message);
+        }
+      }
+      async function delL(id) {
+        if (confirm("Remove this outfit? The pieces stay in the shop.")) {
+          await call("DELETE", "outfits/" + id);
+          loadL();
+        }
+      }
+      async function save(id, b) {
+        try {
+          await call("PUT", "products/" + id, {
+            price: +$("#pr" + id).value,
+            stock: +$("#st" + id).value,
+          });
+          b.textContent = "Saved";
+          setTimeout(() => (b.textContent = "Save"), 1500);
+        } catch (x) {
+          alert(x.message);
+        }
+      }
+      async function addP() {
+        try {
+          await call("POST", "products", {
+            name: $("#n").value,
+            category: $("#c").value,
+            price: $("#p").value,
+            stock: $("#s").value,
+            image: $("#i").value,
+          });
+          ["n", "c", "p", "s", "i"].forEach((k) => ($("#" + k).value = ""));
+          loadP();
+        } catch (x) {
+          alert(x.message);
+        }
+      }
+      if (tk) show().catch(() => {});
+    </script>
+  </body>
+</html>

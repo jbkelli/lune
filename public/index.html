@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lune | Wear the inspiration</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Great+Vibes&family=Karla:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fff6f2;
+        --ink: #2b1630;
+        --mute: #7b6475;
+        --acc: #c2185b;
+        --line: #f1dcd8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.55 Karla,
+          system-ui,
+          sans-serif;
+      }
+      h1,
+      h2,
+      .logo {
+        font-family: "Gilda Display", Georgia, serif;
+        font-weight: 400;
+        margin: 0;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 5vw;
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+        z-index: 5;
+      }
+      .logo {
+        font:
+          400 40px/1.2 "Great Vibes",
+          "Brush Script MT",
+          cursive;
+        padding: 0 6px;
+        color: #c2185b;
+        background: linear-gradient(100deg, #b5179e, #e8505b 50%, #f2a33a);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      nav {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+      .link {
+        background: none;
+        border: 0;
+        font: inherit;
+        color: var(--ink);
+        cursor: pointer;
+        padding: 4px 0;
+      }
+      .link:hover {
+        color: var(--acc);
+        text-decoration: underline;
+      }
+      .btn {
+        background: linear-gradient(100deg, #b5179e, #e8505b 60%, #f2a33a);
+        color: #fff;
+        border: 0;
+        border-radius: 3px;
+        padding: 11px 20px;
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .btn:hover {
+        filter: brightness(0.93);
+      }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      .btn.wide {
+        width: 100%;
+      }
+      :focus-visible {
+        outline: 2px solid var(--acc);
+        outline-offset: 2px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 5vw;
+        padding: 6vw 5vw 5vw;
+        align-items: center;
+      }
+      .arch {
+        height: min(300px, 38vw);
+        border-radius: 999px 999px 50px 50px;
+        background: linear-gradient(160deg, #b5179e, #e8505b 55%, #f2a33a);
+        text-align: center;
+        padding-top: 150px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        font-style: italic;
+      }
+      .hero h1 {
+        font-size: clamp(38px, 6.5vw, 72px);
+        line-height: 1.05;
+      }
+      .hero p {
+        color: var(--mute);
+        max-width: 34ch;
+        margin: 16px 0 0;
+      }
+      .shelf {
+        padding: 0 5vw 80px;
+      }
+      .shelf h2 {
+        font-size: 28px;
+        margin-bottom: 22px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 28px 22px;
+      }
+      .tile {
+        height: 190px;
+        border-radius: 90px 90px 6px 6px;
+        display: grid;
+        place-items: center;
+        font:
+          56px "Gilda Display",
+          Georgia,
+          serif;
+        color: rgba(45, 31, 43, 0.55);
+        margin-bottom: 12px;
+      }
+      .tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: inherit;
+      }
+      .tile svg {
+        width: 46%;
+        height: auto;
+        color: rgba(43, 22, 48, 0.5);
+      }
+      .item small {
+        color: var(--mute);
+      }
+      .item .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 6px;
+      }
+      .add {
+        background: none;
+        border: 1px solid var(--ink);
+        border-radius: 3px;
+        padding: 6px 12px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .add:hover {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      #cart {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: min(380px, 100%);
+        background: var(--bg);
+        border-left: 1px solid var(--line);
+        padding: 22px;
+        transform: translateX(100%);
+        transition: transform 0.25s;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+      }
+      #cart.open {
+        transform: none;
+      }
+      #lines {
+        flex: 1;
+        overflow: auto;
+      }
+      .line {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .qty button {
+        width: 26px;
+        height: 26px;
+        border: 1px solid var(--line);
+        background: none;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .mute {
+        color: var(--mute);
+      }
+      .tot {
+        display: flex;
+        justify-content: space-between;
+        margin: 14px 0;
+      }
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0;
+        width: min(430px, 92vw);
+        background: var(--bg);
+        color: var(--ink);
+      }
+      dialog::backdrop {
+        background: rgba(43, 22, 48, 0.45);
+      }
+      .in {
+        padding: 26px;
+      }
+      label {
+        display: block;
+        font-size: 14px;
+        margin: 12px 0 4px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d8cbcd;
+        border-radius: 3px;
+        font: inherit;
+        background: #fff;
+      }
+      .err {
+        color: #b3261e;
+        font-size: 14px;
+        min-height: 20px;
+      }
+      .x {
+        float: right;
+      }
+      footer {
+        padding: 30px 5vw;
+        color: var(--mute);
+        border-top: 1px solid var(--line);
+        font-size: 14px;
+      }
+      footer p {
+        margin: 2px 0;
+      }
+      .eyebrow {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--acc);
+        margin-bottom: 14px;
+      }
+      .sub {
+        margin: -12px 0 22px;
+      }
+      .looks {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 22px;
+      }
+      .look {
+        border-radius: 135px 135px 8px 8px;
+        padding: 70px 22px 24px;
+        text-align: center;
+        overflow: hidden;
+      }
+      .look.has {
+        padding-top: 0;
+      }
+      .look .shot {
+        display: block;
+        width: calc(100% + 44px);
+        margin: 0 -22px 16px;
+        height: 250px;
+        object-fit: cover;
+      }
+      .look h3 {
+        font:
+          400 26px/1.15 "Gilda Display",
+          Georgia,
+          serif;
+        margin: 4px 0 6px;
+      }
+      .look p {
+        margin: 0 0 10px;
+      }
+      .look .drop {
+        color: var(--acc);
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .look ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 12px;
+        font-size: 14px;
+        text-align: left;
+      }
+      .look li {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(43, 22, 48, 0.1);
+      }
+      .look li.gone {
+        text-decoration: line-through;
+        color: var(--mute);
+      }
+      .look b {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 22px;
+      }
+      .chip {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 20px;
+        padding: 5px 14px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .chip.on {
+        background: var(--ink);
+        color: var(--bg);
+        border-color: var(--ink);
+      }
+      .low {
+        color: var(--acc);
+      }
+      .out .tile {
+        opacity: 0.45;
+      }
+      .add:disabled {
+        border-color: var(--line);
+        color: var(--mute);
+        cursor: default;
+      }
+      .add:disabled:hover {
+        background: none;
+        color: var(--mute);
+      }
+      .qty button:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+      @media (max-width: 700px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .arch {
+          height: 110px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #cart {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="logo">Lune</span>
+      <nav>
+        <button class="link" id="locBtn" hidden>Locations</button
+        ><button class="link" id="acct">Sign in</button
+        ><button class="link" id="openCart">
+          Cart (<span id="count">0</span>)
+        </button>
+      </nav>
+    </header>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Saved on Pinterest, Found at Lune</span>
+        <h1>Wear the inspiration.</h1>
+        <p>
+          Complete outfits and thrifted finds, dropped as full looks. Shop the
+          whole look or pick your own pieces.
+        </p>
+      </div>
+      <div class="arch" aria-hidden="true">
+        <h1>L</h1>
+      </div>
+    </section>
+    <section class="shelf" id="drop" hidden>
+      <h2>The latest drop</h2>
+      <p class="mute sub">
+        Complete outfits, put together for you. Take the whole look or just the
+        pieces you love.
+      </p>
+      <div class="looks" id="looks"></div>
+    </section>
+    <section class="shelf">
+      <h2>All pieces</h2>
+      <div class="chips" id="chips"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+    <footer>
+      <p>Pay with M-Pesa. Delivery across Nairobi.</p>
+      <p>© <span id="yr"></span> Marval Technologies. All rights reserved.</p>
+    </footer>
+
+    <aside id="cart" aria-label="Your cart">
+      <button class="link x" id="closeCart">Close</button>
+      <h2>Your cart</h2>
+      <div id="lines"></div>
+      <div class="tot"><span>Subtotal</span><b id="sub"></b></div>
+      <button class="btn wide" id="go">Checkout</button>
+    </aside>
+
+    <dialog id="auth">
+      <div class="in">
+        <button class="link x" onclick="auth.close()">Close</button>
+        <h2 id="authTitle">Welcome back</h2>
+        <form id="authForm">
+          <div class="up" hidden>
+            <label>Full name</label><input name="name" /><label>Phone</label
+            ><input name="phone" inputmode="tel" placeholder="0712 345 678" />
+          </div>
+          <label>Email</label><input name="email" type="email" required /><label
+            >Password</label
+          ><input name="password" type="password" required />
+          <p class="err" id="authErr"></p>
+          <button class="btn wide">Continue</button>
+        </form>
+        <p>
+          <button class="link" id="swap">New here? Create an account</button>
+        </p>
+      </div>
+    </dialog>
+
+    <dialog id="co">
+      <div class="in">
+        <button class="link x" onclick="co.close()">Close</button>
+        <h2>Delivery & payment</h2>
+        <form id="coForm">
+          <label>Deliver to</label
+          ><select id="addr" required></select>
+          <p>
+            <button type="button" class="link" onclick="openLoc()">
+              Add or manage locations
+            </button>
+          </p>
+          <label>M-Pesa number</label
+          ><input
+            name="phone"
+            inputmode="tel"
+            placeholder="0712 345 678"
+            required
+          />
+          <div class="tot">
+            <span>Total with delivery</span><b id="coTotal"></b>
+          </div>
+          <p class="err" id="coErr"></p>
+          <button class="btn wide">Pay with M-Pesa</button>
+        </form>
+        <div id="coWait" hidden></div>
+      </div>
+    </dialog>
+
+    <dialog id="loc">
+      <div class="in">
+        <button class="link x" onclick="loc.close()">Close</button>
+        <h2>My locations</h2>
+        <div id="locList"></div>
+        <form id="locForm">
+          <label>Name this place</label
+          ><input
+            name="label"
+            placeholder="Home, Office, Mum’s place"
+            required
+          />
+          <label>Delivery area</label
+          ><select name="zone" id="locZone" required></select>
+          <label>Address or landmark</label
+          ><input
+            name="address"
+            placeholder="Building, street, nearest landmark"
+            required
+          />
+          <p class="err" id="locErr"></p>
+          <button class="btn wide">Save location</button>
+        </form>
+      </div>
+    </dialog>
+
+    <script>
+      const $ = (s) => document.querySelector(s),
+        KES = (n) => "KES " + n.toLocaleString();
+      const esc = (s) =>
+        String(s).replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
+      let products = [],
+        outfits = [],
+        cats = [],
+        cat = "All",
+        zones = {},
+        cart = JSON.parse(localStorage.cart || "{}"),
+        token = localStorage.token,
+        uname = localStorage.name || "",
+        mode = "in";
+      const tints = ["#f7d9ec", "#fcd9d4", "#fdebc4", "#ead9f3"];
+      async function api(p, o = {}) {
+        const r = await fetch("/api/" + p, {
+          ...o,
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: "Bearer " + token }),
+          },
+          body: o.body && JSON.stringify(o.body),
+        });
+        const d = await r.json().catch(() => ({}));
+        if (r.status == 401 && token) {
+          token = null;
+          localStorage.removeItem("token");
+          localStorage.removeItem("name");
+          drawAuth();
+          const e = new Error(
+            "Your session has expired. Please sign in again.",
+          );
+          e.auth = true;
+          throw e;
+        }
+        if (!r.ok) throw new Error(d.error || "Something went wrong");
+        return d;
+      }
+      let after = null;
+      function needLogin(msg, next) {
+        setMode("in");
+        after = next || null;
+        $("#authErr").textContent = msg || "";
+        $("#co").close();
+        $("#loc").close();
+        $("#auth").showModal();
+      }
+      const items = () =>
+        Object.entries(cart)
+          .map(([id, q]) => ({
+            ...products.find((p) => p.id == id),
+            qty: Number(q) || 0,
+          }))
+          .filter((i) => i.name && i.qty > 0);
+      const sub = () => items().reduce((s, i) => s + i.price * i.qty, 0);
+      function add(id, d = 1) {
+        const p = products.find((x) => x.id == id);
+        if (!p) return;
+        if (d > 0 && (cart[id] || 0) >= p.stock) return;
+        cart[id] = (cart[id] || 0) + d;
+        if (cart[id] <= 0) delete cart[id];
+        localStorage.cart = JSON.stringify(cart);
+        drawCart();
+      }
+      function drawCart() {
+        const it = items();
+        $("#count").textContent = it.reduce((s, i) => s + i.qty, 0);
+        $("#lines").innerHTML = it.length
+          ? it
+              .map(
+                (i) =>
+                  `<div class="line"><div><b>${esc(i.name)}</b><br><small class="mute">${KES(i.price)}</small></div><div class="qty"><button onclick="add(${i.id},-1)" aria-label="Remove one">−</button> ${i.qty} <button onclick="add(${i.id},1)" aria-label="Add one" ${i.qty >= i.stock ? "disabled" : ""}>+</button></div></div>`,
+              )
+              .join("")
+          : '<p class="mute">Nothing here yet. Pick something from the shop.</p>';
+        $("#sub").textContent = KES(sub());
+        $("#go").disabled = !it.length;
+      }
+      const SVG = (b) =>
+        `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${b}</svg>`;
+      const TEE =
+          '<path d="M30 20 18 30l8 12 6-4v44h36V38l6 4 8-12-12-10c-4 7-36 7-40 0Z"/>',
+        LONG =
+          '<path d="M32 22 12 62l12 5 10-20v35h32V47l10 20 12-5-20-40c-6 8-32 8-36 0Z"/>';
+      const ICONS = {
+        jacket: SVG(LONG + '<path d="M50 30v52M50 30 40 20M50 30l10-10"/>'),
+        hoodie: SVG(
+          LONG + '<path d="M38 24c-2-16 22-16 24 0M40 64h20v12H40Z"/>',
+        ),
+        jersey: SVG(
+          TEE +
+            '<path d="M50 30v52"/><circle cx="50" cy="44" r="1.5"/><circle cx="50" cy="56" r="1.5"/><circle cx="50" cy="68" r="1.5"/>',
+        ),
+        shirt: SVG(TEE),
+        dress: SVG(
+          '<path d="M40 14l-4 26-14 46h56L64 40l-4-26"/><path d="M36 40h28M40 14l1-8M60 14l-1-8"/>',
+        ),
+        bag: SVG(
+          '<path d="M20 40h60l4 46H16Z"/><path d="M36 40c0-28 28-28 28 0"/>',
+        ),
+        shoe: SVG(
+          '<path d="M12 64V48c18 2 26-8 28-18l12 4c6 10 18 14 34 18 4 2 4 10 2 12Z"/><path d="M12 64h78M42 38l6 6M49 34l6 6"/>',
+        ),
+        glasses: SVG(
+          '<rect x="10" y="38" width="32" height="22" rx="9"/><rect x="58" y="38" width="32" height="22" rx="9"/><path d="M42 46h16M10 42 4 36M90 42l6-6"/>',
+        ),
+        belt: SVG(
+          '<rect x="6" y="40" width="88" height="20" rx="4"/><rect x="38" y="35" width="24" height="30" rx="4"/><path d="M70 50h.1M78 50h.1M86 50h.1"/>',
+        ),
+        bangle: SVG(
+          '<ellipse cx="42" cy="56" rx="30" ry="12"/><ellipse cx="58" cy="44" rx="30" ry="12"/>',
+        ),
+      };
+      function icon(p) {
+        const n = (p.name + " " + p.category).toLowerCase(),
+          k = /jacket/.test(n)
+            ? "jacket"
+            : /hoodie/.test(n)
+              ? "hoodie"
+              : /jersey/.test(n)
+                ? "jersey"
+                : /shirt/.test(n)
+                  ? "shirt"
+                  : /dress/.test(n)
+                    ? "dress"
+                    : /bag/.test(n)
+                      ? "bag"
+                      : /sneaker|samba|sandal|shoe/.test(n)
+                        ? "shoe"
+                        : /sunglass/.test(n)
+                          ? "glasses"
+                          : /belt/.test(n)
+                            ? "belt"
+                            : /bangle/.test(n)
+                              ? "bangle"
+                              : "";
+        return ICONS[k] || esc(p.name[0]);
+      }
+      function drawShop() {
+        cats = ["All", ...new Set(products.map((p) => p.category))];
+        $("#chips").innerHTML = cats
+          .map(
+            (c, i) =>
+              `<button class="chip${c == cat ? " on" : ""}" onclick="setCat(${i})">${esc(c)}</button>`,
+          )
+          .join("");
+        const L = outfits
+          .map((o) => ({
+            ...o,
+            ps: o.items
+              .map((id) => products.find((p) => p.id == id))
+              .filter(Boolean),
+          }))
+          .filter((o) => o.ps.length > 1);
+        $("#drop").hidden = !L.length;
+        $("#looks").innerHTML = L.map((o, i) => {
+          const left = o.ps.filter((p) => p.stock > 0),
+            tot = left.reduce((s, p) => s + p.price, 0);
+          return `<div class="look${o.image ? " has" : ""}" style="background:${tints[i % 4]}">${o.image ? `<img class="shot" src="${esc(o.image)}" alt="${esc(o.title)}">` : ""}<div class="drop">${esc(o.drop_name)}</div><h3>${esc(o.title)}</h3><p class="mute">${esc(o.blurb)}</p>
+ <ul>${o.ps.map((p) => `<li class="${p.stock < 1 ? "gone" : ""}"><span>${esc(p.name)}</span><span>${KES(p.price)}</span></li>`).join("")}</ul>
+ <b>${KES(tot)}</b><button class="btn" onclick="addLook(${o.id},this)" ${left.length ? "" : "disabled"}>${!left.length ? "Sold out" : left.length < o.ps.length ? "Add what’s left" : "Add the whole look"}</button></div>`;
+        }).join("");
+        $("#grid").innerHTML = products
+          .filter((p) => cat == "All" || p.category == cat)
+          .map(
+            (
+              p,
+              i,
+            ) => `<div class="item${p.stock < 1 ? " out" : ""}"><div class="tile" style="background:${tints[i % 4]}">${p.image ? `<img src="${esc(p.image)}" alt="">` : icon(p)}</div><b>${esc(p.name)}</b><br><small>${esc(p.category)}</small>${p.stock > 0 && p.stock <= 5 ? `<br><small class="low">${p.stock == 1 ? "Last one" : "Only " + p.stock + " left"}</small>` : ""}
+ <div class="row"><span>${KES(p.price)}</span><button class="add" onclick="add(${p.id})" ${p.stock < 1 ? "disabled" : ""}>${p.stock < 1 ? "Sold out" : "Add to cart"}</button></div></div>`,
+          )
+          .join("");
+      }
+      function drawAuth() {
+        $("#locBtn").hidden = !token;
+        $("#acct").textContent = token
+          ? `Hi, ${uname.split(" ")[0]} (log out)`
+          : "Sign in";
+      }
+      $("#openCart").onclick = () => $("#cart").classList.add("open");
+      $("#closeCart").onclick = () => $("#cart").classList.remove("open");
+      $("#acct").onclick = () => {
+        if (token) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("name");
+          token = null;
+          drawAuth();
+        } else {
+          setMode("in");
+          after = null;
+          $("#authErr").textContent = "";
+          $("#auth").showModal();
+        }
+      };
+      function setMode(m) {
+        mode = m;
+        $("#authTitle").textContent =
+          mode == "in" ? "Welcome back" : "Create your account";
+        document
+          .querySelectorAll(".up")
+          .forEach((e) => (e.hidden = mode == "in"));
+        $("#swap").textContent =
+          mode == "in"
+            ? "New here? Create an account"
+            : "Have an account? Sign in";
+      }
+      $("#swap").onclick = () => setMode(mode == "in" ? "up" : "in");
+      $("#authForm").onsubmit = async (e) => {
+        e.preventDefault();
+        $("#authErr").textContent = "";
+        try {
+          const d = await api(mode == "in" ? "login" : "signup", {
+            method: "POST",
+            body: Object.fromEntries(new FormData(e.target)),
+          });
+          token = localStorage.token = d.token;
+          uname = localStorage.name = d.name;
+          drawAuth();
+          $("#auth").close();
+          const n = after;
+          after = null;
+          if (n) n();
+        } catch (x) {
+          $("#authErr").textContent = x.message;
+        }
+      };
+      $("#go").onclick = openCheckout;
+      async function openCheckout() {
+        if (!token)
+          return needLogin("Please sign in to check out.", openCheckout);
+        $("#cart").classList.remove("open");
+        $("#coErr").textContent = "";
+        try {
+          await loadAddrs();
+        } catch (x) {
+          if (x.auth) return needLogin(x.message, openCheckout);
+          $("#coErr").textContent =
+            "Couldn’t load your saved locations. Please try again.";
+        }
+        $("#coForm").hidden = false;
+        $("#coWait").hidden = true;
+        $("#co").showModal();
+      }
+      $("#addr").onchange = sumTotal;
+      $("#coForm").onsubmit = async (e) => {
+        e.preventDefault();
+        $("#coErr").textContent = "";
+        try {
+          const o = await api("orders", {
+            method: "POST",
+            body: {
+              phone: e.target.phone.value,
+              addressId: $("#addr").value,
+              items: Object.entries(cart).map(([id, qty]) => ({
+                id: +id,
+                qty,
+              })),
+            },
+          });
+          wait(o.id);
+        } catch (x) {
+          if (x.auth) return needLogin(x.message, openCheckout);
+          $("#coErr").textContent = x.message;
+          loadShop();
+        }
+      };
+      function wait(id) {
+        $("#coForm").hidden = true;
+        $("#coWait").hidden = false;
+        $("#coWait").innerHTML =
+          "<p><b>Check your phone.</b> Enter your M-Pesa PIN to pay. This page updates once payment is received.</p>";
+        let n = 0;
+        const giveUp = () => {
+          clearInterval(t);
+          $("#coWait").innerHTML =
+            '<p>We haven’t received your payment. If M-Pesa charged you, keep the confirmation message and contact us.</p><button class="btn wide" onclick="openCheckout()">Try again</button>';
+        };
+        const t = setInterval(async () => {
+          n++;
+          try {
+            const o = await api("orders/" + id);
+            if (o.status == "paid") {
+              clearInterval(t);
+              cart = {};
+              localStorage.cart = "{}";
+              loadShop();
+              $("#coWait").innerHTML =
+                `<h2>Thank you!</h2><p>Payment received (${esc(o.receipt)}). Order #${id} is being prepared for delivery.</p><button class="btn wide" onclick="co.close()">Keep shopping</button>`;
+            } else if (o.status == "failed" || n > 40) giveUp();
+          } catch {
+            if (n > 40) giveUp();
+          }
+        }, 3000);
+      }
+      let addrs = [];
+      function sumTotal() {
+        const a = addrs.find((x) => x.id == $("#addr").value);
+        $("#coTotal").textContent = KES(sub() + (a ? zones[a.zone] || 0 : 0));
+      }
+      async function loadAddrs() {
+        addrs = token ? await api("addresses") : [];
+        $("#locList").innerHTML =
+          addrs
+            .map(
+              (a) =>
+                `<div class="line"><div><b>${esc(a.label)}</b><br><small class="mute">${esc(a.address)}, ${esc(a.zone)}</small></div><button class="link" onclick="delLoc(${a.id})">Remove</button></div>`,
+            )
+            .join("") || '<p class="mute">No saved locations yet.</p>';
+        $("#addr").innerHTML = addrs.length
+          ? addrs
+              .map(
+                (a) =>
+                  `<option value="${a.id}">${esc(a.label)}: ${esc(a.address)} (+${KES(zones[a.zone] || 0)})</option>`,
+              )
+              .join("")
+          : '<option value="">Add a location first</option>';
+        sumTotal();
+      }
+      async function openLoc() {
+        if (!token)
+          return needLogin(
+            "Please sign in to save delivery locations.",
+            openLoc,
+          );
+        $("#locErr").textContent = "";
+        $("#locZone").innerHTML =
+          '<option value="">Choose area</option>' +
+          Object.entries(zones)
+            .map(([z, f]) => `<option value="${z}">${z} (+${KES(f)})</option>`)
+            .join("");
+        try {
+          await loadAddrs();
+        } catch (x) {
+          if (x.auth) return needLogin(x.message, openLoc);
+          $("#locErr").textContent =
+            "Couldn’t load your saved locations. Please try again.";
+        }
+        $("#loc").showModal();
+      }
+      async function delLoc(id) {
+        try {
+          await api("addresses/" + id, { method: "DELETE" });
+          await loadAddrs();
+        } catch (x) {
+          if (x.auth) return needLogin(x.message, openLoc);
+          $("#locErr").textContent = x.message;
+        }
+      }
+      $("#locBtn").onclick = openLoc;
+      $("#locForm").onsubmit = async (e) => {
+        e.preventDefault();
+        $("#locErr").textContent = "";
+        try {
+          const d = await api("addresses", {
+            method: "POST",
+            body: Object.fromEntries(new FormData(e.target)),
+          });
+          e.target.reset();
+          await loadAddrs();
+          $("#addr").value = d.id;
+          sumTotal();
+        } catch (x) {
+          if (x.auth) return needLogin(x.message, openLoc);
+          $("#locErr").textContent = x.message;
+        }
+      };
+      function setCat(i) {
+        cat = cats[i];
+        drawShop();
+      }
+      function addLook(id, b) {
+        const o = outfits.find((x) => x.id == id);
+        if (!o) return;
+        o.items.forEach((pid) => {
+          const p = products.find((x) => x.id == pid);
+          if (p && p.stock > 0 && (cart[pid] || 0) < p.stock) add(pid);
+        });
+        const t = b.textContent;
+        b.textContent = "Added to cart";
+        setTimeout(() => (b.textContent = t), 1500);
+      }
+      function loadShop() {
+        return api("shop").then((d) => {
+          products = d.products.map((p) => ({
+            ...p,
+            stock: Number(p.stock) || 0,
+            price: Number(p.price) || 0,
+          }));
+          zones = d.zones;
+          outfits = d.outfits || [];
+          for (const id in cart) {
+            const p = products.find((x) => x.id == id);
+            if (!p || p.stock < 1) delete cart[id];
+            else cart[id] = Math.min(Number(cart[id]) || 1, p.stock);
+          }
+          localStorage.cart = JSON.stringify(cart);
+          drawShop();
+          drawCart();
+        });
+      }
+      // click outside a popup (or the cart) to close it
+      document.querySelectorAll("dialog").forEach((d) => {
+        let down = false;
+        d.addEventListener("mousedown", (e) => (down = e.target === d));
+        d.addEventListener("click", (e) => {
+          if (down && e.target === d) d.close();
+          down = false;
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (!e.composedPath().some((n) => n.id == "cart" || n.id == "openCart"))
+          $("#cart").classList.remove("open");
+      });
+      $("#yr").textContent = new Date().getFullYear();
+      async function checkSession() {
+        if (!token) return;
+        try {
+          const m = await api("me");
+          uname = localStorage.name = m.name;
+          drawAuth();
+        } catch {}
+      }
+      loadShop();
+      drawAuth();
+      checkSession();
+    </script>
+  </body>
+</html>
